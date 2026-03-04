@@ -1,13 +1,46 @@
+import 'package:bmi_calculator/icon_content.dart';
+import 'package:bmi_calculator/reusable_card.dart';
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
+const bottomContainerHeight = 80.0;
+const activeCardColour = Color(0xFF1D1E33);
+const inactiveCardColour = Color(0xFF111328);
+const bottomContainerColor = Color(0xFFEB1555);
 
 class InputPage extends StatefulWidget {
   const InputPage({super.key});
 
   @override
-  _InputPageState createState() => _InputPageState();
+  State<InputPage> createState() => _InputPageState();
 }
 
 class _InputPageState extends State<InputPage> {
+  Color maleCardColour = inactiveCardColour;
+  Color femaleCardColour = inactiveCardColour;
+
+  //1 = male, 2 = female
+  void updateColour(int gender) {
+    //male card pressed
+    if (gender == 1) {
+      if (maleCardColour == inactiveCardColour) {
+        maleCardColour = activeCardColour;
+        femaleCardColour = inactiveCardColour;
+      } else {
+        maleCardColour = inactiveCardColour;
+      }
+    }
+    //female card pressed
+    if (gender == 2) {
+      if (femaleCardColour == inactiveCardColour) {
+        femaleCardColour = activeCardColour;
+        maleCardColour = inactiveCardColour;
+      } else {
+        femaleCardColour = inactiveCardColour;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,37 +50,57 @@ class _InputPageState extends State<InputPage> {
           Expanded(
             child: Row(
               children: [
-                Expanded(child: ReusableCard(colour: Color(0xFF1D1E33))),
-                Expanded(child: ReusableCard(colour: Color(0xFF1D1E33))),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        updateColour(1);
+                      });
+                    },
+                    child: ReusableCard(
+                      colour: maleCardColour,
+                      cardChild: IconContent(
+                        icon: FontAwesomeIcons.mars,
+                        label: 'MALE',
+                      ),
+                    ),
+                  ),
+                ),
+                Expanded(
+                  child: GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        updateColour(2);
+                      });
+                    },
+                    child: ReusableCard(
+                      colour: femaleCardColour,
+                      cardChild: IconContent(
+                        icon: FontAwesomeIcons.venus,
+                        label: 'FEMALE',
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
-          Expanded(child: ReusableCard(colour: Color(0xFF1D1E33))),
+          Expanded(child: ReusableCard(colour: activeCardColour)),
           Expanded(
             child: Row(
               children: [
-                Expanded(child: ReusableCard(colour: Color(0xFF1D1E33))),
-                Expanded(child: ReusableCard(colour: Color(0xFF1D1E33))),
+                Expanded(child: ReusableCard(colour: activeCardColour)),
+                Expanded(child: ReusableCard(colour: activeCardColour)),
               ],
             ),
           ),
+          Container(
+            color: bottomContainerColor,
+            margin: EdgeInsets.only(top: 10.0),
+            width: double.infinity,
+            height: bottomContainerHeight,
+          ),
         ],
-      ),
-    );
-  }
-}
-
-class ReusableCard extends StatelessWidget {
-  const ReusableCard({super.key, required this.colour});
-
-  final Color colour;
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: EdgeInsets.all(15.0),
-      decoration: BoxDecoration(
-        color: colour,
-        borderRadius: BorderRadius.circular(10.0),
       ),
     );
   }
